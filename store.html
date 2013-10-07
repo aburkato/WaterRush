@@ -1,0 +1,41 @@
+<!--<!doctype html>
+<html ng-app="PipesGame">
+<head>
+<script src="js/angular.min.js"></script>
+<script src="js/ui-bootstrap-tpls-0.6.0.min.js"></script>-->
+<script src="js/store.js"></script><!--
+<link href="js/assets/bootstrap.css" rel="stylesheet" media="screen">
+    <style media="screen" type="text/css">
+        .nav, .pagination, .carousel a { cursor: pointer; }
+    </style>
+</head>
+<body>-->
+
+
+<div ng-controller="TabCtrl">
+    <tabset>
+        <tab active="pane.active" 
+        heading="{{pane.title}}" 
+        ng-repeat="pane in panes">
+            <div ng-include="pane.content"></div>
+        </tab>
+    </tabset>
+</div>
+<!--
+<script>
+angular.module('PipesGame', ['ui.bootstrap']);
+var TabCtrl = function($scope) {
+    $scope.panes = [
+        { title:"Power-ups + Lives", content:"store/powerups_lives.html" },
+        { title:"Persistent Items", content:"store/persistent_items.html" },
+        { title:"Character Items", content:"store/character_items.html" }
+    ];
+
+    $scope.navType = 'tabs';
+};
+</script>-->
+
+<div ui-view></div>
+<!--
+</body>
+</html>-->
