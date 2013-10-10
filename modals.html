@@ -3,7 +3,7 @@
 <head>
 <script src="js/angular.min.js"></script>
 <script src="js/ui-bootstrap-tpls-0.6.0.min.js"></script>
-<script src="js/store.js"></script>
+<script src="js/modals.js"></script>
 <link href="js/assets/bootstrap.css" rel="stylesheet" media="screen">
     <style media="screen" type="text/css">
         .nav, .pagination, .carousel a { cursor: pointer; }
@@ -11,15 +11,10 @@
 </head>
 <body>
 
-<div ng-controller="TabCtrl">
-    <tabset>
-        <tab active="pane.active" 
-        heading="{{pane.title}}" 
-        ng-repeat="pane in panes">
-            <div ng-include="pane.content"></div>
-        </tab>
-    </tabset>
+<div ng-controller="ModalCtrl">
+    <button class="btn" ng-click="PreGame()">PreGame!</button><br />
+    <button class="btn" ng-click="PostGame()">PostGame!</button>
 </div>
 
-</body>
+  </body>
 </html>
