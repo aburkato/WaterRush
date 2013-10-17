@@ -1,5 +1,5 @@
-var PipesGame = angular.module('PipesGame', ["ui.bootstrap"]);
-PipesGame.controller('TabCtrl', function ($scope) {
+angular.module('PipesGame', ["ui.bootstrap"])
+.controller('TabCtrl', function ($scope) {
     $scope.panes = [
         { title:"Power-ups + Lives", content:"store/powerups_lives.html" },
         { title:"Persistent Items", content:"store/persistent_items.html" },
