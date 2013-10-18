@@ -2,16 +2,19 @@
     <h3>Options</h3>
 </div>
 <div class="modal-body" style="text-align: center;">
-    <div ng-controller="RatingDemoCtrl">
+    <div>
         <h4>Sound Effects</h4>
         <div ng-init="x = 5">
-            <rating value="x" max="10" state-on="'icon-ok-sign'" state-off="'icon-ok-circle'"></rating> 
+            <rating value="x" max="10" state-on="'icon-music'" state-off="'icon-remove'"></rating> 
             <b>(<i>Rate:</i> {{x}})</b>
         </div>
+        <hr>
+        <h4>Music</h4>
+        <div ng-init="y = 5">
+            <rating value="y" max="10" state-on="'icon-music'" state-off="'icon-remove'"></rating> 
+            <b>(<i>Rate:</i> {{y}})</b>
+        </div>
     </div>
-<hr>
-<input type="text" id="bar">
-
 </div>
 <div class="modal-footer">
     <button class="btn btn-success" ng-click="ok()">OK</button>
