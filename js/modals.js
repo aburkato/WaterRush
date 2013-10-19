@@ -81,6 +81,19 @@ var ModalInstanceCtrl = function ($scope, $modalInstance) {
     window.open('store.html', '_self', false);
   };
 
+  $scope.openStore = function () {
+    window.open('store.html', '_self', false);
+  };
+
+  $scope.sendGift = function () {
+    // TODO
+  };
+
+  $scope.playLevel = function () {
+    // TODO
+  };
+
+
   $scope.replayGame = function () {
     // TODO
   };
