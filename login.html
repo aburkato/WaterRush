@@ -2,7 +2,6 @@
 <head>
 <script src="js/angular.min.js"></script>
 <script src="js/ui-bootstrap-tpls-0.6.0.min.js"></script>
-<script src="js/login.js"></script>
 <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
 <style media="screen" type="text/css">
     .nav, .pagination, .carousel a { cursor: pointer; }
@@ -10,15 +9,14 @@
 </head>
 <body>
 
-<div id="fb-root"></div>
-  <div class="row" style="padding-top: 200px;">
-    <div class="span4 offset4">
-      <div class="well" style="padding-bottom:70px;">
-        <legend>Sign In</legend>
-        <fb:login-button autologoutlink="true" size="large" show-faces="true" width="300" height="200" max-rows="2"></fb:login-button>
-      </div>
-    </div>
-  </div>
+<div>
+<legend>Facebook Login</legend>
+<FORM METHOD="LINK" ACTION="home.html">
+	Username: <input type="text"><br>
+	Password: <input type="text"><br>
+	<input type="submit" value="Login">
+</FORM>
+</div>
 
 </body>
 </html>
