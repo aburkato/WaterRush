@@ -1,16 +1,8 @@
-<html ng-app="PipesGame">
-<head>
-<script src="js/angular.min.js"></script>
-<script src="js/ui-bootstrap-tpls-0.6.0.min.js"></script>
-<script src="js/store.js"></script>
-<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
-<style media="screen" type="text/css">
-    .nav, .pagination, .carousel a { cursor: pointer; }
-</style>
 <link href="store/store.css" rel="stylesheet" media="screen">
-</head>
-<body>
-
+<div class="modal-header">
+    <h3>Store</h3>
+</div>
+<div class="modal-body" style="text-align: center;">
 <div ng-controller="TabCtrl" style="margin-bottom: 30px;">
     <tabset>
         <tab active="pane.active" 
@@ -20,8 +12,7 @@
         </tab>
     </tabset>
 </div>
-
-<a href="home.html" class="btn btn-large" style="margin-left:30px;"><i class="icon-home"></i> Go Home</a>
-
-</body>
-</html>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-success" ng-click="ok()">OK</button>
+</div>

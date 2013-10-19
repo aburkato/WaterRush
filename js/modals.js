@@ -38,6 +38,29 @@ var ModalCtrl = function ($scope, $modal, $log) {
       controller: ModalInstanceCtrl
     });
   };
+
+  $scope.Leaderboard = function () {
+    var modalInstance = $modal.open({
+      templateUrl: 'leaderboard_modal.html',
+      controller: ModalInstanceCtrl
+    });
+  };
+
+  $scope.Store = function () {
+    var modalInstance = $modal.open({
+      templateUrl: 'store.html',
+      controller: ModalInstanceCtrl
+    });
+  };
+
+  $scope.LogIn = function () {
+    var modalInstance = $modal.open({
+      templateUrl: 'login.html',
+      controller: ModalInstanceCtrl,
+      backdrop: 'static',
+      keyboard: false
+    });
+  };
 };
 
 
@@ -67,10 +90,6 @@ var ModalInstanceCtrl = function ($scope, $modalInstance) {
   };
 
   $scope.resumeGame = function () {
-    // TODO
-  };
-
-  $scope.openOptions = function () {
     // TODO
   };
 };
