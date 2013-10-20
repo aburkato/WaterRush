@@ -55,7 +55,7 @@ var ModalCtrl = function ($scope, $modal, $log) {
 
   $scope.LogIn = function () {
     var modalInstance = $modal.open({
-      templateUrl: 'login.html',
+      templateUrl: 'login_modal.html',
       controller: ModalInstanceCtrl,
       backdrop: 'static',
       keyboard: false
