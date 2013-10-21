@@ -65,6 +65,8 @@ var ModalCtrl = function ($scope, $modal, $log) {
 
 
 var ModalInstanceCtrl = function ($scope, $modalInstance) {
+  $scope.isGlobal = true;
+  
   $scope.ok = function () {
     $modalInstance.close();
   };
@@ -84,6 +86,14 @@ var ModalInstanceCtrl = function ($scope, $modalInstance) {
   $scope.openStore = function () {
     window.open('store.html', '_self', false);
   };
+
+  $scope.dispGlob = function() {
+    $scope.isGlobal = true;
+  }
+
+  $scope.dispFrds = function() {
+    $scope.isGlobal = false;  
+  }
 
   $scope.sendGift = function () {
     // TODO

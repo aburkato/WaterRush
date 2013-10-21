@@ -1,12 +1,10 @@
 <div>
     <div class="btn-group">
-        <button type="button" class="btn btn-default" onclick="dispGlob()">Global</button> 
-        <button type="button" class="btn btn-default" onclick="dispFrds()">Friends</button> 
-        <button type="button" class="btn btn-default" onclick="dispOall()">Overall</button> 
-        <button type="button" class="btn btn-default" onclick="dispLvl()">Level</button> 
+        <button type="button" class="btn btn-default" ng-click="dispGlob()">Global</button> 
+        <button type="button" class="btn btn-default" ng-click="dispFrds()">Friends</button> 
     </div>
 
-    <table class="table table-hover table-bordered" style="margin-top:10px;">
+    <table class="table table-hover table-bordered" ng-show="isGlobal" style="margin-top:10px;">
         <thead>
             <tr>
                 <th>#</th>
@@ -51,6 +49,55 @@
                 <td>198728</td>
                 <td>95</td>
                 <td><button type="button" class="btn btn-primary btn-mini" onclick="sendGift()">Gift</button> <button type="button" class="btn btn-primary btn-mini" onclick="sendMail()">Mail</button></td>
+            </tr>
+        </tbody>
+    </table>
+	
+	<table class="table table-hover table-bordered" ng-show="!isGlobal" style="margin-top:10px;">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Name</th>
+                <th>Score</th>
+                <th>Level</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>1</td>
+                <td>Bob</td>
+                <td>192050</td>
+                <td>78</td>
+                <td><button type="button" class="btn btn-primary btn-mini" onclick="sendGift()">Gift</button> <button type="button" class="btn btn-primary btn-mini" onclick="help()">Help</button></td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>YOU</td>
+                <td>191720</td>
+                <td>77</td>
+                <td><button type="button" class="btn btn-primary btn-mini" onclick="sendGift()">Gift</button> <button type="button" class="btn btn-primary btn-mini" onclick="help()">Help</button></td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>Joe</td>
+                <td>187650</td>
+                <td>72</td>
+                <td><button type="button" class="btn btn-primary btn-mini" onclick="sendGift()">Gift</button> <button type="button" class="btn btn-primary btn-mini" onclick="help()">Help</button></td>
+            </tr>
+            <tr>
+                <td>4</td>
+                <td>Anna</td>
+                <td>162100</td>
+                <td>65</td>
+                <td><button type="button" class="btn btn-primary btn-mini" onclick="sendGift()">Gift</button> <button type="button" class="btn btn-primary btn-mini" onclick="help()">Help</button></td>
+            </tr>
+            <tr>
+                <td>5</td>
+                <td>Fred</td>
+                <td>112980</td>
+                <td>41</td>
+                <td><button type="button" class="btn btn-primary btn-mini" onclick="sendGift()">Gift</button> <button type="button" class="btn btn-primary btn-mini" onclick="help()">Help</button></td>
             </tr>
         </tbody>
     </table>
