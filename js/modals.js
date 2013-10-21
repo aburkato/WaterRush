@@ -109,7 +109,7 @@ var ModalInstanceCtrl = function ($scope, $modalInstance) {
   };
 
   $scope.playGame = function () {
-    // TODO
+    window.open('gameplay.html', '_self', false);
   };
 
   $scope.resumeGame = function () {
