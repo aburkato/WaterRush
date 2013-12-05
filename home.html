@@ -11,15 +11,30 @@
 </head>
 <body>
 <div ng-controller="ModalCtrl">
-	<img src="images/out_of_game_map.png" alt="Out of game map" usemap="#out_of_game_map">
+<div class="navbar navbar-default">  
+  <div class="navbar-inner">
 
-	<map name="out_of_game_map">
-		<area shape="rect" coords="0,0,70,60" ng-click="Options()" alt="Options">
-		<area shape="rect" coords="85,0,130,60" ng-click="NewsFeed()" alt="News Feed">
-		<area shape="rect" coords="525,0,690,60" ng-click="Leaderboard()" alt="LeaderBoard">
-		<area shape="rect" coords="700,0,780,60" ng-click="Store()" alt="Store">
-		<area shape="circle" coords="245,625,30" ng-click="PreGame()" alt="GamePlay">
-	</map>
+  	<ul class="nav pull-left">
+	  <li><a class="brand">Water Rush</a></li>
+  	  <li><a href="#" ng-click="Store()"><i class="icon-plus-sign"></i> <span class="badge badge-info">850</span></a></li>
+  	  <li><a href="#" ng-click="Store()"><i class="icon-heart"></i> <span class="badge badge-info">10</span></a></li>
+  	</ul>
+
+	<ul class="nav pull-right">
+	  <li><a href="#" ng-click="Store()"><i class="icon-shopping-cart"></i></a></li>
+  	  <li><a href="#" ng-click="Options()"><i class="icon-headphones"></i></a></li>
+ 	  <li><a href="#" ng-click="Leaderboard()"><i class="icon-list-alt"></i></a></li>
+  	  <li><a href="#" ng-click="NewsFeed()"><i class="icon-envelope"></i> <span class="badge badge-warning">3</span></a></li> 
+	</ul>  
+   </div>
+</div>
+
+<div class="hero-unit">
+	<h1>Water Rush</h1>
+	<p>Below are the available levels blah blah blah blah blah blah blah blahblah blah blah blahblah blah blah blahblah blah blah blahblah blah blah blahblah blah blah blahblah blah blah blahblah blah blah blah blah blah blah blahblah blah blah blahblah blah blah blahblah blah blah blahblah blah blah blahblah blah blah blahblah blah blah blahblah blah blah blahblah blah blah blahblah blah blah blahblah blah blah blah.</p>
+	<p><button class="btn btn-large btn-primary" type="button" ng-click="PreGame()">Level 1</button></p>
+</div>
+
 </div>
 </body>
 </html>
