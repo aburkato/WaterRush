@@ -1,649 +1,203 @@
 <html>
-	<head>
-		<title>Prototype Game Section</title>
-		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-	  	<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
-	  	<script>
-	  	$(function() {
-
-			var images = {
-				0: {
-					base: 'Cross.png',
-					flow: {
-						'n': [
-							'Cross Vertical Flow Up 0.25.png',
-							'Cross Vertical Flow Up 0.5.png',
-							'Cross Vertical Flow Up 0.75.png',
-							'Cross Vertical 1.0.png',
-						],
-						's': [
-							'Cross Horizontal Flow Down 0.25.png',
-							'Cross Horizontal Flow Down 0.5.png',
-							'Cross Horizontal Flow Down 0.75.png',
-							'Cross Vertical 1.0.png',
-						],
-						'e': [
-							'Cross Horizontal Flow Right 0.25.png',
-							'Cross Horizontal Flow Right 0.5.png',
-							'Cross Horizontal Flow Right 0.75.png',
-							'Cross Horizontal 1.0.png',
-						],
-						'w': [
-							'Cross Horizontal Flow Left 0.25.png',
-							'Cross Horizontal Flow Left 0.5.png',
-							'Cross Horizontal Flow Left 0.75.png',
-							'Cross Horizontal 1.0.png',
-						],
-						'nb': [
-							'Cross Both Flow Up 0.25.png',
-							'Cross Both Flow Up 0.5.png',
-							'Cross Both Flow Up 0.75.png',
-							'Cross Both 1.0.png',
-						],
-						'sb': [
-							'Cross Both Flow Down 0.25.png',
-							'Cross Both Flow Down 0.5.png',
-							'Cross Both Flow Down 0.75.png',
-							'Cross Both 1.0.png',
-						],
-						'eb': [
-							'Cross Both Flow Right 0.25.png',
-							'Cross Both Flow Right 0.5.png',
-							'Cross Both Flow Right 0.75.png',
-							'Cross Both 1.0.png',
-						],
-						'wb': [
-							'Cross Both Flow Left 0.25.png',
-							'Cross Both Flow Left 0.5.png',
-							'Cross Both Flow Left 0.75.png',
-							'Cross Both 1.0.png',
-						],
-					},
-				},
-				1: {
-					base: 'Horizontal.png',
-					flow: {
-						'e': [
-							'Horizontal Flow Right 0.25.png',
-							'Horizontal Flow Right 0.5.png',
-							'Horizontal Flow Right 0.75.png',
-							'Horizontal 1.0.png',
-						],
-						'w': [
-							'Horizontal Flow Left 0.25.png',
-							'Horizontal Flow Left 0.5.png',
-							'Horizontal Flow Left 0.75.png',
-							'Horizontal 1.0.png',
-						],
-					},
-				},
-				2: {
-					base: 'Vertical.png',
-					flow: {
-						'n': [
-							'Vertical Flow Up 0.25.png',
-							'Vertical Flow Up 0.5.png',
-							'Vertical Flow Up 0.75.png',
-							'Vertical 1.0.png',
-						],
-						's': [
-							'Vertical Flow Down 0.25.png',
-							'Vertical Flow Down 0.5.png',
-							'Vertical Flow Down 0.75.png',
-							'Vertical 1.0.png',
-						],
-					},
-				},
-				3: {
-					base: 'Curve NE.png',
-					flow: {
-						's': [
-							'Curve NE Fill E 0.25.png',
-							'Curve NE Fill E 0.5.png',
-							'Curve NE Fill E 0.75.png',
-							'Curve NE 1.0.png',
-						],
-						'w': [
-							'Curve NE Fill N 0.25.png',
-							'Curve NE Fill N 0.5.png',
-							'Curve NE Fill N 0.75.png',
-							'Curve NE 1.0.png',
-						],
-					},
-				},
-				4: {
-					base: 'Curve SE.png',
-					flow: {
-						'n': [
-							'Curve SE Fill E 0.25.png',
-							'Curve SE Fill E 0.5.png',
-							'Curve SE Fill E 0.75.png',
-							'Curve SE 1.0.png',
-						],
-						'w': [
-							'Curve SE Fill S 0.25.png',
-							'Curve SE Fill S 0.5.png',
-							'Curve SE Fill S 0.75.png',
-							'Curve SE 1.0.png',
-						],
-					},
-				},
-				5: {
-					base: 'Curve SW.png',
-					flow: {
-						'e': [
-							'Curve SW Fill S 0.25.png',
-							'Curve SW Fill S 0.5.png',
-							'Curve SW Fill S 0.75.png',
-							'Curve SW 1.0.png',
-						],
-						'n': [
-							'Curve SW Fill W 0.25.png',
-							'Curve SW Fill W 0.5.png',
-							'Curve SW Fill W 0.75.png',
-							'Curve SW 1.0.png',
-						],
-					},
-				},
-				6: {
-					base: 'Curve NW.png',
-					flow: {
-						's': [
-							'Curve NW Fill W 0.25.png',
-							'Curve NW Fill W 0.5.png',
-							'Curve NW Fill W 0.75.png',
-							'Curve NW 1.0.png',
-						],
-						'e': [
-							'Curve NW Fill N 0.25.png',
-							'Curve NW Fill N 0.5.png',
-							'Curve NW Fill N 0.75.png',
-							'Curve NW 1.0.png',
-						],
-					},
-				},
-			};
-
-			//level dependent
-			var baseScore = 100;
-			var scoreMultiplier = 2;
-			var totalSquares = 46;
-
-			//not level dependent
-			var tilesPlaced = 0;
-
-			var points = baseScore*scoreMultiplier;
-
-			var boomstate = false;
-
-			var freeze = false;
-
-			for (var i = 0; i < 6; i++) {
-				var pipe = makePipe();
-			}
-			displayScore();
-
-			function displayScore () {
-				$('#score').text("score: " + points);
-			}
-
-			function calculateScore() {
-				var riverLength = lengthOfRiverbed();
-				var unusedTiles = tilesPlaced - riverLength;
-
-				points = points - unusedTiles*500 + baseScore;
-
-				points = points*(scoreMultiplier + ((20 < riverLength*100/totalSquares) ? 10 : 0));
-
-				displayScore();
-			}
-
-			function lengthOfRiverbed() {
-
-				var next = getRight($('#board .row .start').first());
-				var length = 0;
-				var direction = 'e';
-				var currentPoints = 0;
-
-				points = 0;
-
-				while (next.is('.pipe')) {
-					var id = next.attr('data-pipeType');
-					if (direction in connections[id]) {
-
-						var ns = ['n', 's'].indexOf(direction) > -1;
-						var both = ((next.attr('data-flow-' + (ns ? 'e' : 'n')) == 1)
-								 || (next.attr('data-flow-' + (ns ? 'w' : 's')) == 1));
-
-						direction = connections[id][direction];
-						if (direction == 'n') { next = getTop(next); }
-						else if (direction == 'e') { next = getRight(next); }
-						else if (direction == 's') { next = getBottom(next); }
-						else if (direction == 'w') { next = getLeft(next); }
-					} else {
-						break;
-					}
-					length++;
-					if(next.hasClass('star')){
-						points += 1500;
-					}
-					else{
-						points += 1000;
-					}
-				}
-
-				return length;
-			}
-
-			function freezePU () {
-				freeze = true;
-				setTimeout(unfreeze,15*1000); //15 seconds
-			}
-
-			function unfreeze() {
-				$('#queue .pipe').each(function() {
-					$(this).css({"opacity": 1});
-				});
-				freeze = false;
-			}
-
-			function reQ () {
-				$('#queue .pipe').each(function() {
-					$(this).remove();
-				});
-
-				for (var i = 0; i < 6; i++)
-					makePipe();
-			}
-
-			function makePipe () {
-				var id = Math.floor(Math.random()*7);
-				var pipe = $('<div class="pipe"></div>')
-					.draggable({ revert: 'invalid' })
-					.attr('data-pipeType', id)
-					.css({ 'background-image': 'url("images/' + images[id].base + '")' });
-
-				if (freeze){ //If the freeze power is used, the pipes are hidden
-					pipe.css({ 'opacity': 0 });
-				}
-
-				$('#queue').prepend(pipe);
-				return pipe;
-			}
-
-			var connections = {
-				0: { 'n': 'n', 'e': 'e', 's': 's', 'w': 'w' },
-				1: { 'e': 'e', 'w': 'w' },
-				2: { 'n': 'n', 's': 's' },
-				3: { 's': 'e', 'w': 'n' },
-				4: { 'w': 's', 'n': 'e' },
-				5: { 'n': 'w', 'e': 's' },
-				6: { 's': 'w', 'e': 'n' },
-			};
-
-			function getRight (pipe) {
-				return pipe.next('.pipe, .end, .start, .slot');
-			};
-
-			function getLeft (pipe) {
-				return pipe.prev('.pipe, .end, .start, .slot');
-			};
-
-			function getTop (pipe) {
-				return pipe.parent().prev().children().eq(pipe.index()).filter('.pipe, .end, .start, .slot');
-			};
-
-			function getBottom (pipe) {
-				return pipe.parent().next().children().eq(pipe.index()).filter('.pipe, .end, .start, .slot');
-			};
-
-			function makeSlot () {
-				var slot = $('<div class="slot"></div>');
-
-				slot.droppable({
-					drop: function( event, ui ) {
-						var index = $(this).index();
-						$('#board .row').each(function() { $(this).children().eq(index).removeClass('over'); });
-						$(this).siblings().each(function() { $(this).removeClass('over'); });
-
-						var pipe = ui.draggable;
-						if(this.classList.contains('star')){
-							pipe.addClass('star');
-						}
-
-						pipe.click(function(){
-							if(boomstate){
-								boomstate = false;
-
-								var newSlot = makeSlot();
-
-								if(this.classList.contains('star')){
-									newSlot.addClass('star');
-								}
-
-								$(this).replaceWith(newSlot);
-
-								tilesPlaced--;
-							}
-						});
-
-						$(this).replaceWith(pipe);
-						pipe.draggable('destroy');
-						pipe.css({ 'position': '', 'left': '', 'top': '' });
-
-						pipe = makePipe();
-						pipe.hide().slideDown();
-
-						tilesPlaced++;
-
-						displayScore();
-						start();
-					},
-					over: function( event, ui ) {
-						var index = $(this).index();
-						$('#board .row').each(function() { $(this).children().eq(index).addClass('over'); });
-						$(this).siblings().each(function() { $(this).addClass('over'); });
-					},
-					out: function( event, ui ) {
-						var index = $(this).index();
-						$('#board .row').each(function() { $(this).children().eq(index).removeClass('over'); });
-						$(this).siblings().each(function() { $(this).removeClass('over'); });
-					}
-				});
-
-				return slot;
-			}
-
-			$("#freeze").click(
-				function() { freezePU(); }
-			);
-
-			$("#reQueue").click(
-				function() { reQ(); }
-			);
-
-			$("#boom").click(
-				function() { boomstate = true; }
-			);
-
-			$('#exitLevel').click(function(){
-				 window.open('home.html', '_self', false);
-			});
-
-			$('.slot').replaceWith(function(){
-				if (this.classList.contains('star')) {
-					return makeSlot().addClass('star');
-				} else {
-					return makeSlot();
-				}
-			});
-
-			var fps = 30;
-
-			function update() {
-				var next = getRight($('#board .row .start').first());
-				var direction = 'e';
-
-				calculateScore();
-
-				while (next.is('.pipe')) {
-					var id = next.attr('data-pipeType');
-					if (direction in connections[id]) {
-						var flow = parseFloat(next.attr('data-flow-' + direction) || 0);
-						flow = Math.min(flow + (1.0 / fps)*(1.0/7.0), 1);
-
-						if(!freeze) {
-							next.attr('data-flow-' + direction, flow);
-						}
-
-						var ns = ['n', 's'].indexOf(direction) > -1;
-						var both = ((next.attr('data-flow-' + (ns ? 'e' : 'n')) == 1)
-								 || (next.attr('data-flow-' + (ns ? 'w' : 's')) == 1));
-
-						next.css({ 'background-image': 'url("images/' + images[id]['flow'][direction + (both ? 'b' : '')][Math.min(3, Math.floor(flow * 4))] + '")' });
-						if (flow < 1) { return; }
-
-						direction = connections[id][direction];
-						if (direction == 'n') { next = getTop(next); }
-						else if (direction == 'e') { next = getRight(next); }
-						else if (direction == 's') { next = getBottom(next); }
-						else if (direction == 'w') { next = getLeft(next); }
-					} else {
-						defeat();
-						return;
-					}
-				}
-
-				if (next.is('.slot')) {
-					next.addClass('spill');
-					defeat();
-				} else if (next.is('.end') && direction == 's') {
-					next.addClass('done');
-					victory();
-				} else {
-					defeat();
-				}
-
-			};
-
-			function victory() {
-				stop();
-				alert('You win!. You have got ' + points + ' points');
-				window.location = 'home.html';
-			}
-
-			function defeat() {
-				stop();
-				alert('You lose! You have got ' + points + ' points');
-				window.location = 'home.html';
-			}
-
-			var updateId = -1;
-			function start() {
-				if (updateId == -1) {
-					updateId = setInterval(update, 1000 / fps);
-				}
-			}
-
-			function stop() {
-				clearInterval(updateId);
-			}
-	  	});
-	  	</script>
-		<style>
-			#queue {
-				float: left;
-				height: 515px;
-				width: 90px;
-				background-color: #8c8;
-			}
-
-			#guard {
-				height: 257.5px;
-				width: 90px;
-				background-color: #AA0000;
-				opacity: .4;
-				position: relative;
-				z-index: 1;
-			}
-
-			#score {
-				height: 20px;
-				width: 120px;
-				background-color: #000000;
-				color: #FFFFFF;
-			}
-
-			#board {
-				float: left;
-				height: 515px;
-				width: 770px;
-				background-color: #caa;
-			}
-
-			#freeze {
-				float: left;
-				height: 70px;
-				width: 70px;
-				background-color: #00AAAA;
-			}
-
-			#boom {
-				float: left;
-				height: 70px;
-				width: 70px;
-				background-color: #AA00AA;
-			}
-
-			#reQueue {
-				float: left;
-				height: 70px;
-				width: 70px;
-				background-color: #0000AA;
-			}
-
-			#exitLevel {
-				float: left;
-				height: 70px;
-				width: 70px;
-				background-color: #00AA00;
-			}
-
-			.star:before {
-				content: url('images/Star.png');
-			}
-
-			.grid .row {
-				clear: left;
-			}
-
-			.grid .row .pipe,
-			.grid .row .slot,
-			.grid .row .start,
-			.grid .row .end,
-			.grid .row .empty {
-				float: left;
-			}
-
-			.pipe, .slot, .empty, .start, .end {
-				height: 80px;
-				width: 80px;
-				margin-left: 5px;
-				margin-top: 5px;
-				background-size: 80px 80px;
-			}
-
-			.start {
-				background-image: url('images/Start Flow Right.png');
-			}
-
-			.end {
-				background-image: url('images/End Flow Down.png');
-			}
-
-			.end.done {
-				background-image: url('images/Start Flow Up.png');
-			}
-
-			.slot.spill {
-				background-image: url('images/waterbase.png');
-			}
-
-			.pipe {
-				background-color: #aea;
-			}
-
-			.slot {
-				background-color: #faa;
-			}
-
-			.slot.filled {
-				background-color: #ccc;
-			}
-
-			.slot.over {
-				background-color: #fcc;
-			}
-		</style>
-	</head>
-	<body>
-		<div id="score"></div>
-		<div id="queue">
-		</div>
-		<div id="board">
-			<div class="grid">
-				<div class="row">
-					<div class="start"></div>
-					<div class="slot"></div>
-					<div class="slot"></div>
-					<div class="slot"></div>
-					<div class="slot"></div>
-					<div class="slot"></div>
-					<div class="slot"></div>
-					<div class="empty"></div>
-					<div class="empty"></div>
-				</div>
-				<div class="row">
-					<div class="slot"></div>
-					<div class="slot"></div>
-					<div class="slot"></div>
-					<div class="slot"></div>
-					<div class="slot"></div>
-					<div class="slot"></div>
-					<div class="slot"></div>
-					<div class="slot"></div>
-					<div class="empty"></div>
-				</div>
-				<div class="row">
-					<div class="slot"></div>
-					<div class="slot"></div>
-					<div class="slot"></div>
-					<div class="slot"></div>
-					<div class="slot"></div>
-					<div class="slot"></div>
-					<div class="slot"></div>
-					<div class="slot"></div>
-					<div class="slot"></div>
-				</div>
-				<div class="row">
-					<div class="slot"></div>
-					<div class="slot"></div>
-					<div class="slot star"></div>
-					<div class="slot"></div>
-					<div class="slot"></div>
-					<div class="slot"></div>
-					<div class="slot"></div>
-					<div class="slot"></div>
-					<div class="slot"></div>
-				</div>
-				<div class="row">
-					<div class="empty"></div>
-					<div class="slot"></div>
-					<div class="slot"></div>
-					<div class="slot"></div>
-					<div class="slot"></div>
-					<div class="slot"></div>
-					<div class="slot"></div>
-					<div class="slot"></div>
-					<div class="slot"></div>
-				</div>
-				<div class="row">
-					<div class="empty"></div>
-					<div class="empty"></div>
-					<div class="slot"></div>
-					<div class="slot"></div>
-					<div class="slot"></div>
-					<div class="slot"></div>
-					<div class="slot"></div>
-					<div class="slot"></div>
-					<div class="end"></div>
-				</div>
+<head>
+	<title>Prototype Game Section</title>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+	<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+	<script src="js/gameplay.js"></script>
+	<style>
+	#queue {
+		float: left;
+		height: 515px;
+		width: 90px;
+		background-color: #8c8;
+	}
+
+	#guard {
+		height: 257.5px;
+		width: 90px;
+		background-color: #AA0000;
+		opacity: .4;
+		position: relative;
+		z-index: 1;
+	}
+
+	#score {
+		height: 20px;
+		width: 120px;
+		background-color: #000000;
+		color: #FFFFFF;
+	}
+
+	#board {
+		float: left;
+		height: 515px;
+		width: 770px;
+		background-color: #caa;
+	}
+
+	#freeze {
+		float: left;
+		height: 70px;
+		width: 70px;
+		background-color: #00AAAA;
+	}
+
+	#boom {
+		float: left;
+		height: 70px;
+		width: 70px;
+		background-color: #AA00AA;
+	}
+
+	#reQueue {
+		float: left;
+		height: 70px;
+		width: 70px;
+		background-color: #0000AA;
+	}
+
+	#exitLevel {
+		float: left;
+		height: 70px;
+		width: 70px;
+		background-color: #00AA00;
+	}
+
+	.star:before {
+		content: url('images/Star.png');
+	}
+
+	.grid .row {
+		clear: left;
+	}
+
+	.grid .row .pipe,
+	.grid .row .slot,
+	.grid .row .start,
+	.grid .row .end,
+	.grid .row .empty {
+		float: left;
+	}
+
+	.pipe, .slot, .empty, .start, .end {
+		height: 80px;
+		width: 80px;
+		margin-left: 5px;
+		margin-top: 5px;
+		background-size: 80px 80px;
+	}
+
+	.start {
+		background-image: url('images/Start Flow Right.png');
+	}
+
+	.end {
+		background-image: url('images/End Flow Down.png');
+	}
+
+	.end.done {
+		background-image: url('images/Start Flow Up.png');
+	}
+
+	.slot.spill {
+		background-image: url('images/waterbase.png');
+	}
+
+	.pipe {
+		background-color: #aea;
+	}
+
+	.slot {
+		background-color: #faa;
+	}
+
+	.slot.filled {
+		background-color: #ccc;
+	}
+
+	.slot.over {
+		background-color: #fcc;
+	}
+	</style>
+</head>
+<body>
+	<div id="score"></div>
+	<div id="queue">
+	</div>
+	<div id="board">
+		<div class="grid">
+			<div class="row">
+				<div class="start"></div>
+				<div class="slot"></div>
+				<div class="slot"></div>
+				<div class="slot"></div>
+				<div class="slot"></div>
+				<div class="slot"></div>
+				<div class="slot"></div>
+				<div class="empty"></div>
+				<div class="empty"></div>
+			</div>
+			<div class="row">
+				<div class="slot"></div>
+				<div class="slot"></div>
+				<div class="slot"></div>
+				<div class="slot"></div>
+				<div class="slot"></div>
+				<div class="slot"></div>
+				<div class="slot"></div>
+				<div class="slot"></div>
+				<div class="empty"></div>
+			</div>
+			<div class="row">
+				<div class="slot"></div>
+				<div class="slot"></div>
+				<div class="slot"></div>
+				<div class="slot"></div>
+				<div class="slot"></div>
+				<div class="slot"></div>
+				<div class="slot"></div>
+				<div class="slot"></div>
+				<div class="slot"></div>
+			</div>
+			<div class="row">
+				<div class="slot"></div>
+				<div class="slot"></div>
+				<div class="slot star"></div>
+				<div class="slot"></div>
+				<div class="slot"></div>
+				<div class="slot"></div>
+				<div class="slot"></div>
+				<div class="slot"></div>
+				<div class="slot"></div>
+			</div>
+			<div class="row">
+				<div class="empty"></div>
+				<div class="slot"></div>
+				<div class="slot"></div>
+				<div class="slot"></div>
+				<div class="slot"></div>
+				<div class="slot"></div>
+				<div class="slot"></div>
+				<div class="slot"></div>
+				<div class="slot"></div>
+			</div>
+			<div class="row">
+				<div class="empty"></div>
+				<div class="empty"></div>
+				<div class="slot"></div>
+				<div class="slot"></div>
+				<div class="slot"></div>
+				<div class="slot"></div>
+				<div class="slot"></div>
+				<div class="slot"></div>
+				<div class="end"></div>
 			</div>
 		</div>
-		<div id="guard"></div>
-		<div id="freeze">Freeze</div>
-		<div id="boom">Boom</div>
-		<div id="reQueue">ReQ</div>
-		<div id="exitLevel">Quit</div>
-	</body>
+	</div>
+	<div id="guard"></div>
+	<div id="freeze">Freeze</div>
+	<div id="boom">Boom</div>
+	<div id="reQueue">ReQ</div>
+	<div id="exitLevel">Quit</div>
+</body>
 </html>
