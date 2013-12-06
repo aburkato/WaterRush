@@ -158,191 +158,191 @@ $(function() {
 		},
 	};
 
-			//level dependent
-			var baseScore = 100;
-			var scoreMultiplier = 2;
-			var totalSquares = 46;
+	//level dependent
+	var baseScore = 100;
+	var scoreMultiplier = 2;
+	var totalSquares = 46;
 
-			//not level dependent
-			var tilesPlaced = 0;
+	//not level dependent
+	var tilesPlaced = 0;
 
-			var points = baseScore*scoreMultiplier;
+	var points = baseScore*scoreMultiplier;
 
-			var boomstate = false;
+	var boomstate = false;
 
-			var freeze = false;
+	var freeze = false;
 
-			for (var i = 0; i < 6; i++) {
-				var pipe = makePipe();
+	for (var i = 0; i < 6; i++) {
+		var pipe = makePipe();
+	}
+	displayScore(points);
+
+	function calculateScore() {
+		var riverLength = lengthOfRiverbed();
+		var unusedTiles = tilesPlaced - riverLength;
+
+		points = points - unusedTiles*500 + baseScore;
+
+		points = points*(scoreMultiplier + ((20 < riverLength*100/totalSquares) ? 10 : 0));
+
+		displayScore(points);
+	}
+
+	function lengthOfRiverbed() {
+
+		var next = getRight($('#board .row .start').first());
+		var length = 0;
+		var direction = 'e';
+		var currentPoints = 0;
+
+		points = 0;
+
+		while (next.is('.pipe')) {
+			var id = next.attr('data-pipeType');
+			if (direction in connections[id]) {
+
+				var ns = ['n', 's'].indexOf(direction) > -1;
+				var both = ((next.attr('data-flow-' + (ns ? 'e' : 'n')) == 1)
+					|| (next.attr('data-flow-' + (ns ? 'w' : 's')) == 1));
+
+				direction = connections[id][direction];
+				if (direction == 'n') { next = getTop(next); }
+				else if (direction == 'e') { next = getRight(next); }
+				else if (direction == 's') { next = getBottom(next); }
+				else if (direction == 'w') { next = getLeft(next); }
+			} else {
+				break;
 			}
-			displayScore(points);
-
-			function calculateScore() {
-				var riverLength = lengthOfRiverbed();
-				var unusedTiles = tilesPlaced - riverLength;
-
-				points = points - unusedTiles*500 + baseScore;
-
-				points = points*(scoreMultiplier + ((20 < riverLength*100/totalSquares) ? 10 : 0));
-
-				displayScore(points);
+			length++;
+			if(next.hasClass('star')){
+				points += 1500;
 			}
+			else{
+				points += 1000;
+			}
+		}
 
-			function lengthOfRiverbed() {
+		return length;
+	}
 
-				var next = getRight($('#board .row .start').first());
-				var length = 0;
-				var direction = 'e';
-				var currentPoints = 0;
+	function freezePU () {
+		freeze = true;
+		setTimeout(unfreeze,15*1000); //15 seconds
+	}
 
-				points = 0;
+	function unfreeze() {
+		$('#queue .pipe').each(function() {
+			$(this).css({"opacity": 1});
+		});
+		freeze = false;
+	}
 
-				while (next.is('.pipe')) {
-					var id = next.attr('data-pipeType');
-					if (direction in connections[id]) {
+	function reQ () {
+		$('#queue .pipe').each(function() {
+			$(this).remove();
+		});
 
-						var ns = ['n', 's'].indexOf(direction) > -1;
-						var both = ((next.attr('data-flow-' + (ns ? 'e' : 'n')) == 1)
-							|| (next.attr('data-flow-' + (ns ? 'w' : 's')) == 1));
+		for (var i = 0; i < 6; i++)
+			makePipe();
+	}
 
-						direction = connections[id][direction];
-						if (direction == 'n') { next = getTop(next); }
-						else if (direction == 'e') { next = getRight(next); }
-						else if (direction == 's') { next = getBottom(next); }
-						else if (direction == 'w') { next = getLeft(next); }
-					} else {
-						break;
-					}
-					length++;
-					if(next.hasClass('star')){
-						points += 1500;
-					}
-					else{
-						points += 1000;
-					}
+	function makePipe () {
+		var id = Math.floor(Math.random()*7);
+		var pipe = $('<div class="pipe"></div>')
+		.draggable({ revert: 'invalid' })
+		.attr('data-pipeType', id)
+		.css({ 'background-image': 'url("images/' + images[id].base + '")' });
+
+		if (freeze){ //If the freeze power is used, the pipes are hidden
+			pipe.css({ 'opacity': 0 });
+		}
+
+		$('#queue').prepend(pipe);
+		return pipe;
+	}
+
+	var connections = {
+		0: { 'n': 'n', 'e': 'e', 's': 's', 'w': 'w' },
+		1: { 'e': 'e', 'w': 'w' },
+		2: { 'n': 'n', 's': 's' },
+		3: { 's': 'e', 'w': 'n' },
+		4: { 'w': 's', 'n': 'e' },
+		5: { 'n': 'w', 'e': 's' },
+		6: { 's': 'w', 'e': 'n' },
+	};
+
+	function getRight (pipe) {
+		return pipe.next('.pipe, .end, .start, .slot');
+	};
+
+	function getLeft (pipe) {
+		return pipe.prev('.pipe, .end, .start, .slot');
+	};
+
+	function getTop (pipe) {
+		return pipe.parent().prev().children().eq(pipe.index()).filter('.pipe, .end, .start, .slot');
+	};
+
+	function getBottom (pipe) {
+		return pipe.parent().next().children().eq(pipe.index()).filter('.pipe, .end, .start, .slot');
+	};
+
+	function makeSlot () {
+		var slot = $('<div class="slot"></div>');
+
+		slot.droppable({
+			drop: function( event, ui ) {
+				var index = $(this).index();
+				$('#board .row').each(function() { $(this).children().eq(index).removeClass('over'); });
+				$(this).siblings().each(function() { $(this).removeClass('over'); });
+
+				var pipe = ui.draggable;
+				if(this.classList.contains('star')){
+					pipe.addClass('star');
 				}
 
-				return length;
-			}
+				pipe.click(function(){
+					if(boomstate){
+						boomstate = false;
 
-			function freezePU () {
-				freeze = true;
-				setTimeout(unfreeze,15*1000); //15 seconds
-			}
+						var newSlot = makeSlot();
 
-			function unfreeze() {
-				$('#queue .pipe').each(function() {
-					$(this).css({"opacity": 1});
-				});
-				freeze = false;
-			}
-
-			function reQ () {
-				$('#queue .pipe').each(function() {
-					$(this).remove();
-				});
-
-				for (var i = 0; i < 6; i++)
-					makePipe();
-			}
-
-			function makePipe () {
-				var id = Math.floor(Math.random()*7);
-				var pipe = $('<div class="pipe"></div>')
-				.draggable({ revert: 'invalid' })
-				.attr('data-pipeType', id)
-				.css({ 'background-image': 'url("images/' + images[id].base + '")' });
-
-				if (freeze){ //If the freeze power is used, the pipes are hidden
-					pipe.css({ 'opacity': 0 });
-				}
-
-				$('#queue').prepend(pipe);
-				return pipe;
-			}
-
-			var connections = {
-				0: { 'n': 'n', 'e': 'e', 's': 's', 'w': 'w' },
-				1: { 'e': 'e', 'w': 'w' },
-				2: { 'n': 'n', 's': 's' },
-				3: { 's': 'e', 'w': 'n' },
-				4: { 'w': 's', 'n': 'e' },
-				5: { 'n': 'w', 'e': 's' },
-				6: { 's': 'w', 'e': 'n' },
-			};
-
-			function getRight (pipe) {
-				return pipe.next('.pipe, .end, .start, .slot');
-			};
-
-			function getLeft (pipe) {
-				return pipe.prev('.pipe, .end, .start, .slot');
-			};
-
-			function getTop (pipe) {
-				return pipe.parent().prev().children().eq(pipe.index()).filter('.pipe, .end, .start, .slot');
-			};
-
-			function getBottom (pipe) {
-				return pipe.parent().next().children().eq(pipe.index()).filter('.pipe, .end, .start, .slot');
-			};
-
-			function makeSlot () {
-				var slot = $('<div class="slot"></div>');
-
-				slot.droppable({
-					drop: function( event, ui ) {
-						var index = $(this).index();
-						$('#board .row').each(function() { $(this).children().eq(index).removeClass('over'); });
-						$(this).siblings().each(function() { $(this).removeClass('over'); });
-
-						var pipe = ui.draggable;
 						if(this.classList.contains('star')){
-							pipe.addClass('star');
+							newSlot.addClass('star');
 						}
 
-						pipe.click(function(){
-							if(boomstate){
-								boomstate = false;
+						$(this).replaceWith(newSlot);
 
-								var newSlot = makeSlot();
-
-								if(this.classList.contains('star')){
-									newSlot.addClass('star');
-								}
-
-								$(this).replaceWith(newSlot);
-
-								tilesPlaced--;
-							}
-						});
-
-						$(this).replaceWith(pipe);
-						pipe.draggable('destroy');
-						pipe.css({ 'position': '', 'left': '', 'top': '' });
-
-						pipe = makePipe();
-						pipe.hide().slideDown();
-
-						tilesPlaced++;
-
-						displayScore(points);
-						start();
-					},
-					over: function( event, ui ) {
-						var index = $(this).index();
-						$('#board .row').each(function() { $(this).children().eq(index).addClass('over'); });
-						$(this).siblings().each(function() { $(this).addClass('over'); });
-					},
-					out: function( event, ui ) {
-						var index = $(this).index();
-						$('#board .row').each(function() { $(this).children().eq(index).removeClass('over'); });
-						$(this).siblings().each(function() { $(this).removeClass('over'); });
+						tilesPlaced--;
 					}
 				});
 
+				$(this).replaceWith(pipe);
+				pipe.draggable('destroy');
+				pipe.css({ 'position': '', 'left': '', 'top': '' });
+
+				pipe = makePipe();
+				pipe.hide().slideDown();
+
+				tilesPlaced++;
+
+				displayScore(points);
+				start();
+			},
+			over: function( event, ui ) {
+				var index = $(this).index();
+				$('#board .row').each(function() { $(this).children().eq(index).addClass('over'); });
+				$(this).siblings().each(function() { $(this).addClass('over'); });
+			},
+			out: function( event, ui ) {
+				var index = $(this).index();
+				$('#board .row').each(function() { $(this).children().eq(index).removeClass('over'); });
+				$(this).siblings().each(function() { $(this).removeClass('over'); });
+			}
+		});
+
 return slot;
-}
+};
 
 $("#freeze").click(
 	function() { freezePU(); }
