@@ -1,7 +1,7 @@
 $(function() {
 	// The images of the tiles and flow.
 	IMAGES = initImages();
-	
+
 	//level dependent
 	var baseScore = 100;
 	var scoreMultiplier = 2;
@@ -266,13 +266,13 @@ function displayScore (score) {
 
 function victory() {
 	stop();
-	alert('You win!. You have got ' + points + ' points');
+	alert('You win!. You have got ' + Math.max(0, points) + ' points');
 	window.location = 'home.html';
 }
 
 function defeat() {
 	stop();
-	alert('You lose! You have got ' + points + ' points');
+	alert('You lose! You have got ' + Math.max(0, points) + ' points');
 	window.location = 'home.html';
 }
 
