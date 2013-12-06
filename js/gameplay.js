@@ -12,12 +12,9 @@ $(function() {
 
 	//not level dependent
 	var tilesPlaced = 0;
-
 	var points = baseScore*scoreMultiplier;
-
 	var boomstate = false;
-
-	var freeze = false;
+	var freezePU = new FreezePowerUp(3);
 
 	for (var i = 0; i < 6; i++) {
 		var pipe = makePipe();
@@ -72,18 +69,6 @@ $(function() {
 		return length;
 	}
 
-	function freezePU () {
-		freeze = true;
-		setTimeout(unfreeze,15*1000); //15 seconds
-	}
-
-	function unfreeze() {
-		$('#queue .pipe').each(function() {
-			$(this).css({"opacity": 1});
-		});
-		freeze = false;
-	}
-
 	function reQ () {
 		$('#queue .pipe').each(function() {
 			$(this).remove();
@@ -100,7 +85,7 @@ $(function() {
 		.attr('data-pipeType', id)
 		.css({ 'background-image': 'url("images/' + IMAGES[id].base + '")' });
 
-		if (freeze){ //If the freeze power is used, the pipes are hidden
+		if (freezePU.isFreezing()){ //If the freeze power is used, the pipes are hidden
 			pipe.css({ 'opacity': 0 });
 		}
 
@@ -182,8 +167,9 @@ return slot;
 };
 
 $("#freeze").click(
-	function() { freezePU(); }
-	);
+	function() { 
+		freezePU.freeze(); }
+		);
 
 $("#reQueue").click(
 	function() { reQ(); }
@@ -219,7 +205,7 @@ function update() {
 			var flow = parseFloat(next.attr('data-flow-' + direction) || 0);
 			flow = Math.min(flow + (1.0 / fps)*(1.0/7.0), 1);
 
-			if(!freeze) {
+			if(!freezePU.isFreezing()) {
 				next.attr('data-flow-' + direction, flow);
 			}
 
@@ -253,19 +239,17 @@ function update() {
 
 };
 
-function displayScore (score) {
-	$('#score').text("score: " + score);
-}
-
 function victory() {
 	stop();
-	alert('You win!. You have got ' + Math.max(0, points) + ' points');
+	points = Math.max(0, points);
+	alert('You win!. You have got ' + points + ' points');
 	window.location = 'home.html';
 }
 
 function defeat() {
 	stop();
-	alert('You lose! You have got ' + Math.max(0, points) + ' points');
+	points = Math.max(0, points);
+	alert('You lose! You have got ' + points + ' points');
 	window.location = 'home.html';
 }
 
@@ -274,6 +258,10 @@ function start() {
 	if (updateId == -1) {
 		updateId = setInterval(update, 1000 / fps);
 	}
+}
+
+function displayScore (score) {
+	$('#score').text("score: " + score);
 }
 
 function stop() {
