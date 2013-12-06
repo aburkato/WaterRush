@@ -1,6 +1,9 @@
 $(function() {
-	// The images of the tiles and flow.
+	// Init static resources for game-play.
+	// Init images for tiles and water flow.
 	IMAGES = initImages();
+	// Init connections.
+	CONNECTIONS = initConnections();
 
 	//level dependent
 	var baseScore = 100;
@@ -43,13 +46,13 @@ $(function() {
 
 		while (next.is('.pipe')) {
 			var id = next.attr('data-pipeType');
-			if (direction in connections[id]) {
+			if (direction in CONNECTIONS[id]) {
 
 				var ns = ['n', 's'].indexOf(direction) > -1;
 				var both = ((next.attr('data-flow-' + (ns ? 'e' : 'n')) == 1)
 					|| (next.attr('data-flow-' + (ns ? 'w' : 's')) == 1));
 
-				direction = connections[id][direction];
+				direction = CONNECTIONS[id][direction];
 				if (direction == 'n') { next = getTop(next); }
 				else if (direction == 'e') { next = getRight(next); }
 				else if (direction == 's') { next = getBottom(next); }
@@ -104,16 +107,6 @@ $(function() {
 		$('#queue').prepend(pipe);
 		return pipe;
 	}
-
-	var connections = {
-		0: { 'n': 'n', 'e': 'e', 's': 's', 'w': 'w' },
-		1: { 'e': 'e', 'w': 'w' },
-		2: { 'n': 'n', 's': 's' },
-		3: { 's': 'e', 'w': 'n' },
-		4: { 'w': 's', 'n': 'e' },
-		5: { 'n': 'w', 'e': 's' },
-		6: { 's': 'w', 'e': 'n' },
-	};
 
 	function getRight (pipe) {
 		return pipe.next('.pipe, .end, .start, .slot');
@@ -222,7 +215,7 @@ function update() {
 
 	while (next.is('.pipe')) {
 		var id = next.attr('data-pipeType');
-		if (direction in connections[id]) {
+		if (direction in CONNECTIONS[id]) {
 			var flow = parseFloat(next.attr('data-flow-' + direction) || 0);
 			flow = Math.min(flow + (1.0 / fps)*(1.0/7.0), 1);
 
@@ -237,7 +230,7 @@ function update() {
 			next.css({ 'background-image': 'url("images/' + IMAGES[id]['flow'][direction + (both ? 'b' : '')][Math.min(3, Math.floor(flow * 4))] + '")' });
 			if (flow < 1) { return; }
 
-			direction = connections[id][direction];
+			direction = CONNECTIONS[id][direction];
 			if (direction == 'n') { next = getTop(next); }
 			else if (direction == 'e') { next = getRight(next); }
 			else if (direction == 's') { next = getBottom(next); }

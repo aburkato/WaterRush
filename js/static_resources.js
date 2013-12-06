@@ -1,4 +1,3 @@
-
 function initImages() {
 	var images = {
 		0: {
@@ -159,4 +158,17 @@ function initImages() {
 	};
 
 	return images;
+};
+
+function initConnections() {
+	var connections = {
+		0: { 'n': 'n', 'e': 'e', 's': 's', 'w': 'w' },
+		1: { 'e': 'e', 'w': 'w' },
+		2: { 'n': 'n', 's': 's' },
+		3: { 's': 'e', 'w': 'n' },
+		4: { 'w': 's', 'n': 'e' },
+		5: { 'n': 'w', 'e': 's' },
+		6: { 's': 'w', 'e': 'n' },
+	};
+	return connections;
 };
