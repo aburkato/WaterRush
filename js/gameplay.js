@@ -175,11 +175,7 @@ $(function() {
 			for (var i = 0; i < 6; i++) {
 				var pipe = makePipe();
 			}
-			displayScore();
-
-			function displayScore () {
-				$('#score').text("score: " + points);
-			}
+			displayScore(points);
 
 			function calculateScore() {
 				var riverLength = lengthOfRiverbed();
@@ -189,7 +185,7 @@ $(function() {
 
 				points = points*(scoreMultiplier + ((20 < riverLength*100/totalSquares) ? 10 : 0));
 
-				displayScore();
+				displayScore(points);
 			}
 
 			function lengthOfRiverbed() {
@@ -330,7 +326,7 @@ $(function() {
 
 						tilesPlaced++;
 
-						displayScore();
+						displayScore(points);
 						start();
 					},
 					over: function( event, ui ) {
@@ -419,6 +415,10 @@ function update() {
 	}
 
 };
+
+function displayScore (score) {
+	$('#score').text("score: " + score);
+}
 
 function victory() {
 	stop();
